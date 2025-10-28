@@ -1389,8 +1389,8 @@ void ZedCamera::getPosTrackingParams()
     get_logger(), " * Positional tracking mode: "
       << sl::toString(mPosTrkMode).c_str());
 
-  mBaseFrameId = mCameraName;
-  mBaseFrameId += "_camera_link";
+  mBaseFrameId = "base_link";
+
 
   sl_tools::getParam(
     shared_from_this(), "pos_tracking.map_frame", mMapFrameId,

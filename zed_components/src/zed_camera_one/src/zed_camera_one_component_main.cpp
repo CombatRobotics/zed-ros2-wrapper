@@ -1550,7 +1550,7 @@ bool ZedCameraOne::handleDigitalGain(
 void ZedCameraOne::initTFCoordFrameNames()
 {
   // ----> Coordinate frames
-  _cameraLinkFrameId = _cameraName + "_camera_link";
+  _cameraLinkFrameId = _cameraName + "base_link";
   _cameraCenterFrameId = _cameraName + "_camera_center";
   _camImgFrameId = _cameraName + "_camera_frame";
   _camOptFrameId = _cameraName + "_camera_optical_frame";
