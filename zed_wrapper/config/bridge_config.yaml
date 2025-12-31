@@ -1,0 +1,7 @@
+name: my_pose_bridge
+topics:
+  /zed/zed_node/pose_with_covariance:  # Replace with actual topic name (e.g., /robot_pose)
+    type: geometry_msgs/msg/PoseWithCovarianceStamped # Replace with actual message type
+    from_domain: 55
+    to_domain: 64
+    # remap: /zed/zed_node/pose_with_covariance  # Optional: Keep name same or change it

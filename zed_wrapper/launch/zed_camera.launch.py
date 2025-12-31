@@ -35,6 +35,10 @@ from launch_ros.actions import (
     LoadComposableNodes
 )
 from launch_ros.descriptions import ComposableNode
+from launch_ros.actions import Node
+from launch.conditions import IfCondition
+from launch.substitutions import LaunchConfiguration
+
 
 # Enable colored output
 os.environ["RCUTILS_COLORIZED_OUTPUT"] = "1"
@@ -45,6 +49,14 @@ default_config_common = os.path.join(
     'config',
     'common'
 )
+
+# Domain bridge default config
+default_domain_bridge_config = os.path.join(
+    get_package_share_directory('zed_wrapper'),
+    'config',
+    'bridge_config.yaml'
+)
+
 
 # Object Detection Configuration to be loaded by ZED Node
 default_object_detection_config_path = os.path.join(
@@ -335,6 +347,16 @@ def launch_setup(context, *args, **kwargs):
     )
     return_array.append(load_composable_node)
 
+    domain_bridge_node = Node(
+        condition=IfCondition(LaunchConfiguration('enable_domain_bridge')),
+        package='domain_bridge',
+        executable='domain_bridge',
+        name='domain_bridge',
+        output=node_log_effective,
+        arguments=[LaunchConfiguration('domain_bridge_config')]
+    )
+    return_array.append(domain_bridge_node)
+
     return return_array
 
 def generate_launch_description():
@@ -420,12 +442,12 @@ def generate_launch_description():
                 description='If set to `true` the node will act as a clock server publishing the SVO timestamp. This is useful for node synchronization'),
             DeclareLaunchArgument(
                 'enable_gnss',
-                default_value='false',
+                default_value='true',
                 description='Enable GNSS fusion to fix positional tracking pose with GNSS data from messages of type `sensor_msgs::msg::NavSatFix`. The fix topic can be customized in `common_stereo.yaml`.',
                 choices=['true', 'false']),
             DeclareLaunchArgument(
                 'gnss_antenna_offset',
-                default_value='[]',
+                default_value='[-0.60,0.0,0.12]',
                 description='Position of the GNSS antenna with respect to the mounting point of the ZED camera. Format: [x,y,z]'),
             DeclareLaunchArgument(
                 'enable_ipc',
@@ -458,6 +480,17 @@ def generate_launch_description():
                 'stream_port',
                 default_value='30000',
                 description='The connection port of the input streaming server.'),
+            DeclareLaunchArgument(
+                'enable_domain_bridge',
+                default_value='false',
+                description='Enable domain_bridge node',
+                choices=['true', 'false']
+            ),
+            DeclareLaunchArgument(
+                'domain_bridge_config',
+                default_value=TextSubstitution(text=default_domain_bridge_config),
+                description='Path to domain_bridge YAML config file'
+            ),
             DeclareLaunchArgument(
                 'custom_baseline',
                 default_value='0.0',

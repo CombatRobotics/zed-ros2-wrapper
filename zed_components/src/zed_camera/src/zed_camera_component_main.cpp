@@ -2480,14 +2480,7 @@ bool ZedCamera::startCamera()
       break;
     }
 
-    if (mConnStatus == sl::ERROR_CODE::DRIVER_FAILURE) {
-      RCLCPP_ERROR_STREAM(
-        get_logger(),
-        "ZED X Driver failure: "
-          << sl::toVerbose(mConnStatus)
-          << ". Please verify that the ZED drivers are correctly installed.");
-      return false;
-    }
+ 
 
     if (mConnStatus == sl::ERROR_CODE::INVALID_CALIBRATION_FILE) {
       if (mOpencvCalibFile.empty()) {
