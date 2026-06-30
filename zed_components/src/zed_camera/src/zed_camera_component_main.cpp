@@ -2790,6 +2790,7 @@ bool ZedCamera::startCamera()
     mInitParams.enable_image_validity_check = mImageValidityCheck;
 
     if (mCamUserModel == sl::MODEL::VIRTUAL_ZED_X) {
+#if (ZED_SDK_MAJOR_VERSION * 10 + ZED_SDK_MINOR_VERSION) >= 51
       if (mCamVirtualSerialNumbers.size() == 2) {
         // Generate the virtual serial number from the two real serial numbers
         auto virtual_sn =
@@ -2830,6 +2831,12 @@ bool ZedCamera::startCamera()
           "To use VIRTUAL_ZED_X model, you must provide either two VALID serial numbers or two VALID camera IDs.");
         return false;
       }
+#else
+      RCLCPP_ERROR(
+        get_logger(),
+        "The VIRTUAL_ZED_X model requires ZED SDK v5.1 or newer.");
+      return false;
+#endif
     } else {
       if (mCamSerialNumber > 0) {
         mInitParams.input.setFromSerialNumber(mCamSerialNumber);
@@ -4057,7 +4064,9 @@ bool ZedCamera::startPosTrackingLocked()
   ptParams.enable_area_memory = mAreaMemory;
   ptParams.area_file_path =
     (mAreaFileExists ? mAreaMemoryFilePath.c_str() : "");
+#if (ZED_SDK_MAJOR_VERSION * 10 + ZED_SDK_MINOR_VERSION) >= 51
   ptParams.enable_localization_only = mLocalizationOnly;
+#endif
   ptParams.enable_imu_fusion = mImuFusion;
   ptParams.initial_world_transform = mInitialPoseSl;
   ptParams.set_floor_as_origin = mFloorAlignment;

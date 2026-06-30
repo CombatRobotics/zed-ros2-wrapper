@@ -310,6 +310,7 @@ void ZedCamera::getCustomOdParams()
       std::string(
         "  * ") + param_name + ": ", true, 0.0f,
       100000.0f);
+#if (ZED_SDK_MAJOR_VERSION * 10 + ZED_SDK_MINOR_VERSION) >= 54
     param_name = param_prefix + "velocity_smoothing_factor";
     sl_tools::getParam(
       shared_from_this(), param_name,
@@ -346,6 +347,7 @@ void ZedCamera::getCustomOdParams()
       sl::OBJECT_ACCELERATION_PRESET::LAST,
       customOdProperties.object_tracking_parameters.object_acceleration_preset,
       std::string("  * ") + param_name + ": ");
+#endif
 
     mCustomOdProperties[class_id] = customOdProperties; // Update the Custom OD Properties information
   }
@@ -862,6 +864,7 @@ bool ZedCamera::handleCustomOdDynamicParams(
       "Parameter '"
         << param.get_name() << "' correctly set to "
         << mCustomOdProperties[class_id].max_allowed_acceleration);
+#if (ZED_SDK_MAJOR_VERSION * 10 + ZED_SDK_MINOR_VERSION) >= 54
   } else if (param_name == "velocity_smoothing_factor") {
     rclcpp::ParameterType
       correctType = rclcpp::ParameterType::PARAMETER_DOUBLE;
@@ -926,6 +929,7 @@ bool ZedCamera::handleCustomOdDynamicParams(
       "Parameter '"
         << param.get_name() << "' correctly set to "
         << mCustomOdProperties[class_id].object_tracking_parameters.min_confirmation_time_s);
+#endif
   } else {
     RCLCPP_WARN_STREAM(get_logger(), "Unknown parameter: " << param.get_name());
   }
