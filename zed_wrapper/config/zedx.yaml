@@ -24,5 +24,5 @@
           ae_antibanding: 1 # AE anti-banding mode. 0=OFF, 1=AUTO, 2=50Hz, 3=60Hz. Requires ZED SDK >= 5.3
 
         depth:
-          min_depth: 0.01 # Min: 0.01, Max: 3.0
+          min_depth: 0.3 # Min: 0.1 for ZED SDK < 5.1, Max: 3.0
           max_depth: 15.0 # Min: 0.5, Max: 40.0
