@@ -2735,8 +2735,19 @@ bool ZedCamera::startCamera()
 
   // ----> TF2 Transform
   mTfBuffer = std::make_unique<tf2_ros::Buffer>(get_clock());
+  auto tf_sub_options = tf2_ros::detail::get_default_transform_listener_sub_options<>();
+  auto tf_static_sub_options =
+    tf2_ros::detail::get_default_transform_listener_static_sub_options<>();
+  tf_sub_options.use_intra_process_comm = rclcpp::IntraProcessSetting::Disable;
+  tf_static_sub_options.use_intra_process_comm = rclcpp::IntraProcessSetting::Disable;
   mTfListener = std::make_unique<tf2_ros::TransformListener>(
-    *mTfBuffer);    // Start TF Listener thread
+    *mTfBuffer,
+    shared_from_this(),
+    true,
+    tf2_ros::DynamicListenerQoS(100),
+    tf2_ros::StaticListenerQoS(1),
+    tf_sub_options,
+    tf_static_sub_options);    // Start TF Listener thread
   mTfBroadcaster = std::make_unique<tf2_ros::TransformBroadcaster>(this);
 
   mStaticTfPublished = false;

@@ -910,7 +910,19 @@ void ZedCameraOne::logSdkVersion()
 void ZedCameraOne::setupTf2()
 {
   _tfBuffer = std::make_unique<tf2_ros::Buffer>(get_clock());
-  _tfListener = std::make_unique<tf2_ros::TransformListener>(*_tfBuffer);
+  auto tf_sub_options = tf2_ros::detail::get_default_transform_listener_sub_options<>();
+  auto tf_static_sub_options =
+    tf2_ros::detail::get_default_transform_listener_static_sub_options<>();
+  tf_sub_options.use_intra_process_comm = rclcpp::IntraProcessSetting::Disable;
+  tf_static_sub_options.use_intra_process_comm = rclcpp::IntraProcessSetting::Disable;
+  _tfListener = std::make_unique<tf2_ros::TransformListener>(
+    *_tfBuffer,
+    shared_from_this(),
+    true,
+    tf2_ros::DynamicListenerQoS(100),
+    tf2_ros::StaticListenerQoS(1),
+    tf_sub_options,
+    tf_static_sub_options);
   _tfBroadcaster = std::make_unique<tf2_ros::TransformBroadcaster>(this);
 
   _staticImuTfPublished = false;
