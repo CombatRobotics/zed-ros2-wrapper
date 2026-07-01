@@ -22,7 +22,8 @@ from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
     OpaqueFunction,
-    LogInfo
+    LogInfo,
+    TimerAction
 )
 from launch.conditions import IfCondition
 from launch.substitutions import (
@@ -393,7 +394,7 @@ def launch_setup(context, *args, **kwargs):
         }],
         remappings=[('robot_description', camera_name_val+'_description')]
     )
-    return_array.append(rsp_node)
+    return_array.append(TimerAction(period=10.0, actions=[rsp_node]))
 
     # ROS 2 Component Container
     if (container_name_val == ''):
