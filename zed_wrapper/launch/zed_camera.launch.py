@@ -597,7 +597,7 @@ def generate_launch_description():
                 description='If set to `true` the node will act as a clock server publishing the SVO timestamp. This is useful for node synchronization'),
             DeclareLaunchArgument(
                 'enable_gnss',
-                default_value='true',
+                default_value='false',
                 description='Enable GNSS fusion to fix positional tracking pose with GNSS data from messages of type `sensor_msgs::msg::NavSatFix`. The fix topic can be customized in `common_stereo.yaml`.',
                 choices=['true', 'false']),
             DeclareLaunchArgument(
